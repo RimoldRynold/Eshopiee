@@ -52,3 +52,19 @@ class ContactModel(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Customer(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    phone = models.CharField(max_length=15)
+    email = models.EmailField()
+    password = models.CharField(max_length=500 )
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def register(self):
+        self.save()
+
+    def __str__(self):
+        return self.first_name
