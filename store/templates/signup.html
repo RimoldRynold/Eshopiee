@@ -8,7 +8,7 @@
     <div class="p-4 m-4">
         <div class="col-lg-5 mx-auto border border-dark p-4">
             <h3 class="alert alert-light border rounded ">Create an Account</h3>
-            <form action="" method="POST">
+            <form action="/signup" method="POST">
                 {% csrf_token %}
                 {% if error %}
                 <div class="alert alert-danger" role="alert">

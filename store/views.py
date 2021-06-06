@@ -103,3 +103,8 @@ def signup(request):
 
     else:
         return registerUser(request)
+
+
+
+def login1(request):
+    return render(request,'login1.html')
