@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
+<div class="container" style="background-image: url({% static 'c.jpg' %});">
 <div class="container">
     <div class="p-4 m-4">
         <div class="col-lg-5 mx-auto border border-dark p-4">
@@ -55,5 +57,5 @@
         </div>
     </div>
 </div>
-
+</div>
 {% endblock %}

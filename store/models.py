@@ -66,5 +66,11 @@ class Customer(models.Model):
     def register(self):
         self.save()
 
+    def isExists(self):
+        if Customer.objects.filter(email=self.email):
+            return True
+        
+        return False
+
     def __str__(self):
         return self.first_name

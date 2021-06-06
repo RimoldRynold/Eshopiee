@@ -53,6 +53,14 @@ def signup(request):
         }
         #valiadation
         error_message = None
+
+        customer = Customer(first_name=firstname,
+            last_name=lastname,
+            phone = phone,
+            email = email,
+            password = password
+            )
+
         if not firstname:
             error_message = 'First Name Required !!'
         # elif len(firstname) < 4 :
@@ -67,16 +75,13 @@ def signup(request):
             error_message = 'Password Number Required'
         # elif len(password) <6 :
         #     error_message = 'Passwors must be 6 or more character long'
+        elif customer.isExists():
+            error_message = 'Email address already registered..'
 
         #saving
         if not error_message:
             print(firstname,lastname,phone,email,password)
-            customer = Customer(first_name=firstname,
-            last_name=lastname,
-            phone = phone,
-            email = email,
-            password = password
-            )
+            
             customer.register()
             # return redirect('/') or
             return redirect('home')
