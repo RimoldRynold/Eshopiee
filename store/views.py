@@ -2,6 +2,8 @@ from store.models import Category, Product ,ContactModel , Customer
 from django.shortcuts import redirect, render
 
 from django.http import HttpResponse
+
+from django.contrib.auth.hashers import make_password,check_password
 # Create your views here.
 
 
@@ -81,7 +83,7 @@ def signup(request):
         #saving
         if not error_message:
             print(firstname,lastname,phone,email,password)
-            
+            customer.password = make_password(customer.password)
             customer.register()
             # return redirect('/') or
             return redirect('home')
