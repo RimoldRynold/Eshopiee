@@ -4,6 +4,8 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 
 from django.contrib.auth.hashers import make_password,check_password
+
+from django.views import View
 # Create your views here.
 
 
@@ -104,8 +106,31 @@ def signup(request):
     else:
         return registerUser(request)
 
+class Login(View):
+    def get(self,request):
+        return render(request,'login1.html')
+    def post(self,request):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        customer = Customer.get_customer_by_email(email)
+        print(customer)
+        error_message = None
+        if customer:#here is the code to proceed only after getting the customer(check get_customer_by_email 1st )
+            print(customer)
+            flag = check_password(password,customer.password)#customer.password-encoded password
+            if flag:
+                return redirect('home')
+            else:
+                error_message = 'Email or Password invalid !!!'
+
+        else:
+            error_message = 'Email or Password invalid !!!'
+        
+        return render(request,'login1.html',{'error':error_message})
 
 
+
+'''
 def login1(request):
     if request.method == 'GET':
         return render(request,'login1.html')
@@ -128,3 +153,4 @@ def login1(request):
         
         return render(request,'login1.html',{'error':error_message})
 
+'''
