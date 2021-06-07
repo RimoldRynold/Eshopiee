@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import render
 
 # Create your models here.
 
@@ -65,6 +66,17 @@ class Customer(models.Model):
 
     def register(self):
         self.save()
+    '''
+    @staticmethod
+    def get_customer_by_email(email):
+        return Customer.objects.get(email = email)here is the code to proceed only after getting the customer,if you no longer have customer,"Customer matching query does not exist." error will come , to avoid that error we are writing code in try except block'''
+
+    @staticmethod
+    def get_customer_by_email(email):
+        try:
+            return Customer.objects.get(email = email)
+        except:
+            return False
 
     def isExists(self):
         if Customer.objects.filter(email=self.email):

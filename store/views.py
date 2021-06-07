@@ -107,4 +107,24 @@ def signup(request):
 
 
 def login1(request):
-    return render(request,'login1.html')
+    if request.method == 'GET':
+        return render(request,'login1.html')
+    else:
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        customer = Customer.get_customer_by_email(email)
+        print(customer)
+        error_message = None
+        if customer:#here is the code to proceed only after getting the customer(check get_customer_by_email 1st )
+            print(customer)
+            flag = check_password(password,customer.password)#customer.password-encoded password
+            if flag:
+                return redirect('home')
+            else:
+                error_message = 'Email or Password invalid !!!'
+
+        else:
+            error_message = 'Email or Password invalid !!!'
+        
+        return render(request,'login1.html',{'error':error_message})
+
