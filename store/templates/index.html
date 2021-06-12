@@ -53,9 +53,18 @@
   {% if product|is_in_cart:request.session.cart %}
   <div class="row no-gutters">
 
-    <input type="submit" value=" - " class="col-2 btn btn-block btn-secondary">
+    <form action="/" class="col-2" method="POST">
+      {% csrf_token %}
+      <input hidden type="text" name="product" id="" value="{{product.id}}">
+      <input hidden type="text" name="remove" id="" value="True">
+      <input type="submit" value=" - " class=" btn btn-block btn-secondary">
+     </form>
     <div class="text-center col">{{product|cart_quantity:request.session.cart}} in Cart</div>
-    <input type="submit" value=" + " class="col-2 btn btn-block btn-secondary">
+   <form action="/" class="col-2" method="POST">
+    {% csrf_token %}
+    <input hidden type="text" name="product" id="" value="{{product.id}}">
+    <input type="submit" value=" + " class=" btn btn-block btn-secondary">
+   </form>
   </div>
 {% else %}
   <form action="/" method="POST" class="btn-block">
