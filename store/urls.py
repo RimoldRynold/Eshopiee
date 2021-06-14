@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Index,contact,contactsubmit,Signup,Login
+from .views import Index,contact,contactsubmit,Signup,Login,logout
 
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
 
     path('signup',Signup.as_view(),name='signup'),
     path('login1',Login.as_view(),name='login1'),
+    path('logout',logout,name='logout'),
 ]
