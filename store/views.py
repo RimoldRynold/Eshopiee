@@ -246,9 +246,18 @@ class Login(View):
         
         return render(request,'login1.html',{'error':error_message})
 
+
 def logout(request):
-    request.session.clear()
     return redirect('login1')
+
+class Cart(View):
+    def get(self,request):
+        ids = list(request.session.get('cart').keys())
+        products = Product.get_products_by_id(ids)
+        print(products)
+        return render(request,'cart.html')
+
+
 
 '''
 def login1(request):
