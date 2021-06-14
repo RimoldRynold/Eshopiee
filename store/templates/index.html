@@ -13,6 +13,7 @@
 {% block content %}
 
 {% load cart %}
+{% load custom_filter %}
 
 <div class="container-fluid mt-3">
   <!-- all products -->
@@ -42,7 +43,7 @@
       <img class="card-img-top" src="{{product.image.url}}" alt="Card image cap">
       <div class="card-body">
         <p class="card-title">{{product.name}}</p>
-        <p class="card-text"><b>{{product.price}}</b></p>
+        <p class="card-text"><b>{{product.price|currency}}</b></p>
         <!-- {{product | is_in_cart:request.session.cart}} -->
       
 
