@@ -1,4 +1,4 @@
-from store.models import Category, Product ,ContactModel , Customer
+from store.models import Category, Product ,ContactModel , Customer ,Order
 from django.shortcuts import redirect, render
 
 from django.http import HttpResponse
@@ -256,6 +256,30 @@ class Cart(View):
         products = Product.get_products_by_id(ids)
         print(products)
         return render(request,'cart.html',{'products' : products})
+
+class CheckOut(View):
+    def post(self,request):
+        address = request.POST.get('address')
+        phone = request.POST.get('phone')
+        customer = request.session.get('customer')#customer-it is customer id
+        cart = request.session.get('cart')
+        products = Product.get_products_by_id(list(cart.keys()))
+        print(address , phone , customer , cart , products)
+
+        for product in products:
+            print(cart.get(str(product.id)))
+            order = Order(customer =Customer(id= customer),
+            product = product,
+            price = product.price,
+            address = address,
+            phone = phone,
+            quantity = cart.get(str(product.id)))
+
+            order.save()
+
+        request.session['cart'] = {}
+
+        return redirect('cart')
 
 
 
