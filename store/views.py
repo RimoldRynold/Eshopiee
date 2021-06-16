@@ -5,6 +5,9 @@ from django.http import HttpResponse
 
 from django.contrib.auth.hashers import make_password,check_password
 
+from store.middlewares.auth import auth_middleware#the decoratoe is used when it is used inside the function.here is the class. so it needs a method decorator
+from django.utils.decorators import method_decorator
+
 from django.views import View
 # Create your views here.
 
@@ -248,6 +251,7 @@ class Login(View):
 
 
 def logout(request):
+    request.session.clear()
     return redirect('login1')
 
 class Cart(View):
@@ -282,6 +286,7 @@ class CheckOut(View):
         return redirect('cart')
 
 class OrderView(View):
+    @method_decorator(auth_middleware)
     def get(self,request):
         customer = request.session.get('customer')
         orders = Order.get_orders_by_customer(customer)
