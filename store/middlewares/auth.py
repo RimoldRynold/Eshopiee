@@ -5,8 +5,11 @@ def auth_middleware(get_response):
 
 
     def middleware(request):
+        print(request.session.get('customer'))
+        returnUrl = request.META['PATH_INFO']
+        print(request.META['PATH_INFO'])
         if not request.session.get('customer'):
-            return redirect('login1')
+            return redirect(f'login1?return_url={returnUrl}') #f->formatted string
         
         response = get_response(request)
         return response

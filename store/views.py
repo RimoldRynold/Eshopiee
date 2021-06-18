@@ -1,5 +1,5 @@
 from store.models import Category, Product ,ContactModel , Customer ,Order
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render ,HttpResponseRedirect
 
 from django.http import HttpResponse
 
@@ -225,7 +225,9 @@ class Signup(View):
 
 
 class Login(View):
+    return_url = None
     def get(self,request):
+        Login.return_url = request.GET.get('return_url')
         return render(request,'login1.html')
     def post(self,request):
         email = request.POST.get('email')
@@ -240,7 +242,11 @@ class Login(View):
                 # request.session['customer_id'] = customer.id
                 request.session['customer'] = customer.id
                 # request.session['email'] = customer.email
-                return redirect('home')
+                if Login.return_url:
+                    return HttpResponseRedirect(Login.return_url)
+                else:
+                    Login.return_url = None
+                    return redirect('home')
             else:
                 error_message = 'Email or Password invalid !!!'
 

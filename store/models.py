@@ -109,3 +109,6 @@ class Order(models.Model):
     @staticmethod
     def get_orders_by_customer(customer_id):
         return Order.objects.filter(customer = customer_id).order_by('-date')
+
+    def __str__(self):
+        return self.customer.first_name
