@@ -18,10 +18,8 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
-
 class Product(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=200)
     price = models.IntegerField(default=0)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     description = models.CharField(max_length=200,default='',blank=True)
@@ -35,7 +33,9 @@ class Product(models.Model):
 
     @staticmethod
     def get_products_by_id(ids):
-        return Product.objects.filter(id__in = ids)
+        return Product.objects.filter(id__in = ids)#for product collecting
+        # id__in = checking is there any id in list
+        # ids = list dynamically sending
 
 
     @staticmethod
@@ -70,12 +70,18 @@ class Customer(models.Model):
     submitted_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
     def register(self):
         self.save()
     '''
     @staticmethod
     def get_customer_by_email(email):
         return Customer.objects.get(email = email)here is the code to proceed only after getting the customer,if you no longer have customer,"Customer matching query does not exist." error will come , to avoid that error we are writing code in try except block'''
+
+    @staticmethod
+    def get_customer(customer_id):
+        return Customer.objects.get(first_name = customer_id)
+
 
     @staticmethod
     def get_customer_by_email(email):

@@ -15,4 +15,5 @@ urlpatterns = [
     path('listfeedback/',listfeedback.as_view(),name='listfeedback'),
 
     path('<pk>/update',ProductUpdate.as_view(),name='update'),
+    path('<pk>/orderupdate',OrderUpdate.as_view(),name='orderupdate'),
 ]

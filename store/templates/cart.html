@@ -28,6 +28,7 @@
             <td>{{product.name}}</td>
             <td>{{product.price|currency}}</td>
             <td>{{product|cart_quantity:request.session.cart}}</td>
+            <!-- cart_quantity:request.session.cart cart quantity sending to cart -->
             <td>{{product|price_total:request.session.cart|currency}}</td>
         </tr>
        {% endfor %}

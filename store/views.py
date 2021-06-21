@@ -5,31 +5,16 @@ from django.http import HttpResponse
 
 from django.contrib.auth.hashers import make_password,check_password
 
-from store.middlewares.auth import auth_middleware#the decoratoe is used when it is used inside the function.here is the class. so it needs a method decorator
+# print(make_password('1234'))
+# print(check_password('1234','pbkdf2_sha256$260000$Hg0XRapDS7OzK5g03GG2hf$vidlD2DZO6oIPRxMH63deDPGpN3D+m1IKD1DxjVXKbc='))
+
+
+from store.middlewares.auth import auth_middleware#the decorator is used when it is used inside the function.here is the class. so it needs a method decorator
 from django.utils.decorators import method_decorator
 
 from django.views import View
 # Create your views here.
 
-'''
-def index(request):
-    products =None
-    category = Category.get_all_categories
-    categoryID = request.GET.get('category')
-    if categoryID:
-        products = Product.get_all_products_by_categoryid(categoryID)
-    else:
-        products = Product.get_all_products();
-
-        
-    context = {
-        "products":products,
-        "category" : category,
-        
-    }
-    print('you are :' , request.session.get('email'))
-    return render(request,'index.html',context)
-'''
 
 class Index(View):
     def get(self,request):
@@ -38,24 +23,34 @@ class Index(View):
             request.session['cart'] = {}
         products =None
         #request.session.get('cart').clear()
-        category = Category.get_all_categories
+        category = Category.get_all_categories()
         categoryID = request.GET.get('category')
         if categoryID:
             products = Product.get_all_products_by_categoryid(categoryID)
         else:
             products = Product.get_all_products();
+        
 
-            
+        email = request.session.get('email')
+        customer = Customer.get_customer_by_email(email)
+        print('customer is',customer)
+
         context = {
+
             "products":products,
             "category" : category,
+            'customer' : customer
             
+            
+    
         }
-        print('you are :' , request.session.get('email'))
+        print('you are :' , request.session.get('email')) #from Login
+        
         return render(request,'index.html',context)
 
-    def post(self,request):
+    def post(self,request):#add to cart
         product = request.POST.get('product')
+        print(product)
         remove = request.POST.get('remove')
         cart = request.session.get('cart')
         if cart:
@@ -93,74 +88,7 @@ def contactsubmit(request):
         return HttpResponse("<h1>Thanks for Contact</h1>")
     
     return render(request,'contact_us.html')
-'''
-def validateCustomer(customer):
-    error_message = None;
-    if not customer.first_name:
-        error_message = 'First Name Required !!'
-    # elif len(firstname) < 4 :
-    #     error_message = 'First Name must be 4 or more character long'
-    elif not customer.last_name:
-        error_message = 'Last Name Required !!'
-    elif not customer.phone  :
-        error_message = 'Phone Number Required'
-    elif len(customer.phone) <10 :
-        error_message = 'Phone must be 10 character long'
-    elif not customer.password  :
-        error_message = 'Password Number Required'
-    # elif len(password) <6 :
-    #     error_message = 'Passwors must be 6 or more character long'
-    elif customer.isExists():
-        error_message = 'Email address already registered..'
 
-    return error_message
-
-def registerUser(request):
-    firstname = request.POST.get('firstname')
-    lastname = request.POST.get('lastname')
-    phone = request.POST.get('phone')
-    email = request.POST.get('email')
-    password = request.POST.get('password')
-    value = {
-        'firstname' : firstname,
-        'lastname' : lastname,
-        'phone' : phone,
-        'email' : email,
-        'password' :password
-    }
-    #valiadation
-    error_message = None
-
-    customer = Customer(first_name=firstname,
-        last_name=lastname,
-        phone = phone,
-        email = email,
-        password = password
-        )
-    error_message = validateCustomer(customer)
-    
-    #saving
-    if not error_message:
-        print(firstname,lastname,phone,email,password)
-        customer.password = make_password(customer.password)
-        customer.register()
-        # return redirect('/') or
-        return redirect('home')
-    else:
-        data = {
-            'values' : value,
-            'error' : error_message,
-        }
-        return render(request,'signup.html',data)
-    
-
-def signup(request):
-    if request.method == 'GET':
-        return render(request,'signup.html')
-
-    else:
-        return registerUser(request)
-'''
 class Signup(View):
     def get(self,request):
         return render(request,'signup.html')
@@ -240,9 +168,10 @@ class Login(View):
             flag = check_password(password,customer.password)#customer.password-encoded password
             if flag:
                 # request.session['customer_id'] = customer.id
-                request.session['customer'] = customer.id
-                # request.session['email'] = customer.email
-                if Login.return_url:
+                request.session['customer'] = customer.id #saving customer object in session
+                request.session['email'] = customer.email
+                # return redirect('home')
+                if Login.return_url: #if we have return url
                     return HttpResponseRedirect(Login.return_url)
                 else:
                     Login.return_url = None
@@ -252,7 +181,7 @@ class Login(View):
 
         else:
             error_message = 'Email or Password invalid !!!'
-        
+        print(email, password)
         return render(request,'login1.html',{'error':error_message})
 
 
@@ -261,7 +190,13 @@ def logout(request):
     return redirect('login1')
 
 class Cart(View):
+    
+    @method_decorator(auth_middleware)
     def get(self,request):
+        print(request.session.get('cart'))
+        print(request.session.get('cart').keys())
+        #dict to list
+        print(list(request.session.get('cart').keys()))
         ids = list(request.session.get('cart').keys())
         products = Product.get_products_by_id(ids)
         print(products)
@@ -285,6 +220,7 @@ class CheckOut(View):
             phone = phone,
             quantity = cart.get(str(product.id)))
 
+            # print(order)
             order.save()
 
         request.session['cart'] = {}
@@ -298,28 +234,3 @@ class OrderView(View):
         orders = Order.get_orders_by_customer(customer)
         print(orders)
         return render(request,'orders.html',{'orders':orders})
-
-'''
-def login1(request):
-    if request.method == 'GET':
-        return render(request,'login1.html')
-    else:
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        customer = Customer.get_customer_by_email(email)
-        print(customer)
-        error_message = None
-        if customer:#here is the code to proceed only after getting the customer(check get_customer_by_email 1st )
-            print(customer)
-            flag = check_password(password,customer.password)#customer.password-encoded password
-            if flag:
-                return redirect('home')
-            else:
-                error_message = 'Email or Password invalid !!!'
-
-        else:
-            error_message = 'Email or Password invalid !!!'
-        
-        return render(request,'login1.html',{'error':error_message})
-
-'''

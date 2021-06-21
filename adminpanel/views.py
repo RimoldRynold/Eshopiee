@@ -3,9 +3,9 @@ from django.shortcuts import render,redirect
 from django.views.generic import View,TemplateView 
 from django.views.generic.edit import UpdateView
 
-from store.models import Category, Product ,ContactModel 
+from store.models import Category, Product ,ContactModel ,Customer ,Order 
 
-from adminpanel.forms import ProductAddForm
+from adminpanel.forms import ProductAddForm , OrderAddForm
 # Create your views here.
 
 
@@ -105,4 +105,10 @@ class ProductUpdate(UpdateView):
 	template_name= 'product_update.html'
 	model= Product
 	fields = ['name','price','category','description','image']
+	success_url= '/dash/listproduct'
+
+class OrderUpdate(UpdateView):
+	template_name= 'order_update.html'
+	model= Order
+	fields = ['product','customer','quantity','price','address','phone','status']
 	success_url= '/dash/listproduct'
