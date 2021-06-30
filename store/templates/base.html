@@ -82,12 +82,18 @@
           </li>
           
           {% if  request.session.customer %}  <!-- from Login View --> 
-            
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'profile_update' customer.id %}">{{customer}}</a>
+          </li> 
+  
+          
+
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="/orders">Orders</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/logout">({{customer}})Logout</a>
+              <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
             </li>
            {% else %}
           
@@ -124,11 +130,11 @@
 <!-- footer -->
 <footer class="sticky-footer">
     <ul>
-        <li><a href="">Home</a></li>
-        <li><a href="">About Us</a></li>
+        <li><a href="/">Home</a></li>
+        <!-- <li><a href="">About Us</a></li> -->
         <li><a href="{% url 'contact' %}">Contact Us</a></li>
-        <li><a href="">Home</a></li>
-        <li><a href="">Help</a></li>
+        <!-- <li><a href="">Home</a></li>
+        <li><a href="">Help</a></li> -->
     </ul>
 </footer>
 <!-- footer ends -->

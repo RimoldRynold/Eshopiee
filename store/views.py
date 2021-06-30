@@ -1,6 +1,8 @@
 from store.models import Category, Product ,ContactModel , Customer ,Order
 from django.shortcuts import redirect, render ,HttpResponseRedirect
 
+from django.views.generic.edit import UpdateView
+
 from django.http import HttpResponse
 
 from django.contrib.auth.hashers import make_password,check_password
@@ -18,6 +20,7 @@ from django.views import View
 
 class Index(View):
     def get(self,request):
+        #print(request.GET)
         cart = request.session.get('cart')
         if not cart:
             request.session['cart'] = {}
@@ -25,6 +28,7 @@ class Index(View):
         #request.session.get('cart').clear()
         category = Category.get_all_categories()
         categoryID = request.GET.get('category')
+        #print(categoryID)
         if categoryID:
             products = Product.get_all_products_by_categoryid(categoryID)
         else:
@@ -54,7 +58,7 @@ class Index(View):
         remove = request.POST.get('remove')
         cart = request.session.get('cart')
         if cart:
-            quantity = cart.get(product)
+            quantity = cart.get(product) #product ->product key
             if quantity:
                 if remove:
                     if quantity<=1:
@@ -85,7 +89,7 @@ def contactsubmit(request):
         obj.email=request.POST['email']
         obj.message=request.POST['message']
         obj.save()
-        return HttpResponse("<h1>Thanks for Contact</h1>")
+        return redirect('home')
     
     return render(request,'contact_us.html')
 
@@ -160,6 +164,7 @@ class Login(View):
     def post(self,request):
         email = request.POST.get('email')
         password = request.POST.get('password')
+        #print(email,password)
         customer = Customer.get_customer_by_email(email)
         print(customer)
         error_message = None
@@ -168,6 +173,7 @@ class Login(View):
             flag = check_password(password,customer.password)#customer.password-encoded password
             if flag:
                 # request.session['customer_id'] = customer.id
+#session start,request.session ->we will get a dictionary
                 request.session['customer'] = customer.id #saving customer object in session
                 request.session['email'] = customer.email
                 # return redirect('home')
@@ -200,7 +206,12 @@ class Cart(View):
         ids = list(request.session.get('cart').keys())
         products = Product.get_products_by_id(ids)
         print(products)
-        return render(request,'cart.html',{'products' : products})
+
+        email = request.session.get('email')
+        customer = Customer.get_customer_by_email(email)
+
+
+        return render(request,'cart.html',{'products' : products,'customer':customer})
 
 class CheckOut(View):
     def post(self,request):
@@ -218,14 +229,15 @@ class CheckOut(View):
             price = product.price,
             address = address,
             phone = phone,
-            quantity = cart.get(str(product.id)))
+            quantity = cart.get(str(product.id))) #quantity will get from the cart object
 
             # print(order)
             order.save()
 
         request.session['cart'] = {}
 
-        return redirect('cart')
+        # return redirect('cart')
+        return redirect('/razor')
 
 class OrderView(View):
     @method_decorator(auth_middleware)
@@ -233,4 +245,15 @@ class OrderView(View):
         customer = request.session.get('customer')
         orders = Order.get_orders_by_customer(customer)
         print(orders)
-        return render(request,'orders.html',{'orders':orders})
+
+        email = request.session.get('email')
+        customer = Customer.get_customer_by_email(email)
+
+        return render(request,'orders.html',{'orders':orders,'customer':customer})
+
+
+class ProfileUpdate(UpdateView):
+	template_name= 'profile_update.html'
+	model= Customer
+	fields = ['first_name','last_name','phone','email','profile_pic']
+	success_url= '/'

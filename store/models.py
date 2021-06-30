@@ -66,6 +66,9 @@ class Customer(models.Model):
     last_name = models.CharField(max_length=50)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
+
+    profile_pic = models.ImageField(default='profile1.png',null=True,blank=True)
+
     password = models.CharField(max_length=500 )
     submitted_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -78,9 +81,9 @@ class Customer(models.Model):
     def get_customer_by_email(email):
         return Customer.objects.get(email = email)here is the code to proceed only after getting the customer,if you no longer have customer,"Customer matching query does not exist." error will come , to avoid that error we are writing code in try except block'''
 
-    @staticmethod
-    def get_customer(customer_id):
-        return Customer.objects.get(first_name = customer_id)
+    # @staticmethod
+    # def get_customer(customer_id):
+    #     return Customer.objects.get(first_name = customer_id)
 
 
     @staticmethod
@@ -107,6 +110,8 @@ class Order(models.Model):
     address = models.CharField(max_length=200,default='',blank=True)
     phone = models.CharField(max_length=50,default='',blank=True)
     date = models.DateField(default=datetime.datetime.today)
+
+    
     status = models.BooleanField(default=False)
 
     def placeOrder(self):

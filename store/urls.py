@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Index,contact,contactsubmit,Signup,Login,logout,Cart,CheckOut,OrderView
+from .views import Index,contact,contactsubmit,Signup,Login,logout,Cart,CheckOut,OrderView,ProfileUpdate
 
 
 urlpatterns = [
@@ -13,4 +13,6 @@ urlpatterns = [
     path('cart',Cart.as_view(),name='cart'),
     path('check-out',CheckOut.as_view(),name='checkout'),
     path('orders',OrderView.as_view(),name='orders'),
+
+    path('<pk>/profile_update',ProfileUpdate.as_view(),name='profile_update'),
 ]
