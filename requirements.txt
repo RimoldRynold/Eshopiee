@@ -14,6 +14,7 @@ django-filter==2.4.0
 django-hosts==4.0
 django-widget-tweaks==1.4.8
 filelock==3.0.12
+gunicorn==20.1.0
 idna==2.10
 image==1.5.33
 isort==5.7.0

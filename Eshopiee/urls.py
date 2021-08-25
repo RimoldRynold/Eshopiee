@@ -18,9 +18,15 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.views.static import serve #huroku
+from django.conf.urls import url #huroku
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('store.urls')),
     path('dash/',include('adminpanel.urls')),
     path('razor/',include('src.urls')),
+
+    url(r'^media/(?P<path>.*)$', serve,{'document_root':    settings.MEDIA_ROOT}),#huroku
+    url(r'^static/(?P<path>.*)$', serve,{'document_root':    settings.STATIC_ROOT}),#huroku
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
