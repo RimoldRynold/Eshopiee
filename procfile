@@ -1,1 +1,1 @@
-web: gunicorn Eshopiee.wsgi --log-file -
+web: gunicorn Eshopiee.wsgi
